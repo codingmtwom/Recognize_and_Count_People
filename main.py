@@ -19,24 +19,26 @@ app.config['BASIC_AUTH_FORCE'] = True
 
 basic_auth = BasicAuth(app)
 last_epoch = 0
-numPeople=0
+numPeople = 0
+
+
 def check_for_objects():
-    global last_epoch
+    global last_epoch, numPeople
     while True:
         try:
             frame, found_obj = video_camera.get_object(object_classifier)
             if found_obj and (time.time() - last_epoch) > email_update_interval:
                 last_epoch = time.time()
-                print ("Sending email...")
+                print("Sending email...")
                 sendEmail(frame)
-                print ("done!")
-            elif found_obj == True:
-                 #print("Object Identified")
-                 #numPeople+=1
-                 print(numPeople)
-                 #break
+                print("done!")
+            elif found_obj:
+                print("Object Identified")
+                numPeople += 1
+                print("Persons counted: " + str(numPeople))
+                break
         except:
-            print ("Error sending email: ", sys.exc_info()[0])
+            print("Error sending email: ", sys.exc_info()[0])
 
 
 @app.route('/')
